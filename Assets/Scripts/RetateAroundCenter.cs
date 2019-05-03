@@ -10,11 +10,17 @@ public class RetateAroundCenter : MonoBehaviour
     private float startAngle;
     private float finalAngle;
     private float currentLerpRotationTime;
+    private float maxLerpRotationTime;
 
     private int playedTimes;
     private Material lastTimeSelectedCubeMaterial;
 
     public GameObject centerSphere;
+    public GameObject mainCamera;
+    private Vector3 mainCameraOriginalPosition;
+    private Vector3 mainCameraTargetPosition;
+    private Vector3 cameraCurrentVelociry;
+    public float cameraSmoothTime;
     public Text resultText;
 
     // Start is called before the first frame update
@@ -32,9 +38,22 @@ public class RetateAroundCenter : MonoBehaviour
         this.startAngle = 0;
         this.finalAngle = 0;
         this.currentLerpRotationTime = 0;
+        this.maxLerpRotationTime = 4f;
         this.playedTimes = 0;
         this.lastTimeSelectedCubeMaterial = null;
         this.resultText.enabled = false;
+
+        this.mainCameraOriginalPosition = this.mainCamera.transform.position;
+        //this.mainCameraTargetPosition = this.mainCamera.transform.TransformPoint(
+        //    new Vector3(13f,3f,0f));
+        this.mainCameraTargetPosition = new Vector3(13f, 3f, 0f);
+        this.cameraCurrentVelociry = Vector3.zero;
+
+        if(this.cameraSmoothTime == 0f)
+        {
+            // Default smooth time is 0.3s
+            this.cameraSmoothTime = 0.3f;
+        }
     }
 
     // Update is called once per frame
@@ -47,8 +66,10 @@ public class RetateAroundCenter : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
+                this.currentLerpRotationTime = 0f;
                 this.StartRotation();
                 this.isSpinning = true;
+
                 if (0 != this.playedTimes && null != this.lastTimeSelectedCubeMaterial)
                 {
                     this.lastTimeSelectedCubeMaterial.SetColor("_Color",
@@ -57,20 +78,48 @@ public class RetateAroundCenter : MonoBehaviour
                 }
                 return;
             }
+            else if (
+                this.currentLerpRotationTime == this.maxLerpRotationTime &&
+                this.mainCamera.transform.position != this.mainCameraTargetPosition
+            )
+            {
+                // Moving Camera to target position (Zoom in)
+                this.mainCamera.transform.position =
+                    Vector3.SmoothDamp(
+                        this.mainCamera.transform.position,
+                        this.mainCameraTargetPosition,
+                        ref this.cameraCurrentVelociry,
+                        this.cameraSmoothTime
+                        );
+                return;
+            }
             else
             {
                 return;
             }
         }
 
-        float maxLerpRotationTime = 4f;
+        if (this.currentLerpRotationTime == 0f &&
+                this.mainCamera.transform.position != this.mainCameraOriginalPosition)
+        {
+            // Moving Camera to original position (Zoom out)
+            this.mainCamera.transform.position =
+                Vector3.SmoothDamp(
+                    this.mainCamera.transform.position,
+                    this.mainCameraOriginalPosition,
+                    ref this.cameraCurrentVelociry,
+                    this.cameraSmoothTime
+                    );
+            return;
+        }
+
         // Increment timer once per frame
         this.currentLerpRotationTime += Time.deltaTime;
         if(this.currentLerpRotationTime > maxLerpRotationTime || 
             this.centerSphere.transform.eulerAngles.z == this.finalAngle)
         {
             // Stop spinning
-            this.currentLerpRotationTime = maxLerpRotationTime;
+            this.currentLerpRotationTime = this.maxLerpRotationTime;
             this.isSpinning = false;
             this.startAngle = this.finalAngle % 360;
             this.PickClassmateByAngle();

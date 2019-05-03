@@ -649,6 +649,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   centerSphere: {fileID: 1833197868}
+  mainCamera: {fileID: 534669902}
+  cameraSmoothTime: 0.25
   resultText: {fileID: 1478055515}
 --- !u!1 &2142663487
 GameObject:
