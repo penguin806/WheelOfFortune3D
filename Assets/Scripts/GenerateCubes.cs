@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class GenerateCubes : MonoBehaviour
 {
+    public Font customCubeSurfaceFont;
+
     public void CreateCubeAngle15()
     {
         // The script will be attached to the GameObject <Sphere>
@@ -42,16 +44,20 @@ public class GenerateCubes : MonoBehaviour
             surfaceText.transform.SetParent(myCube.transform);
 
             TextMesh surfaceTextMesh = surfaceText.AddComponent<TextMesh>();
-            //surfaceTextMesh.text = "Test";
+            surfaceTextMesh.font = this.customCubeSurfaceFont;
             surfaceTextMesh.text = (angle / 15 + 1).ToString() +
                 "\n" + myClassmateNames[angle / 15];
+            // Debug.Log(surfaceTextMesh.text);
 
             surfaceTextMesh.fontSize = 100;
             surfaceTextMesh.alignment = TextAlignment.Center;
             surfaceTextMesh.anchor = TextAnchor.MiddleCenter;
             surfaceTextMesh.transform.localScale = new Vector3(0.03f, 0.03f, 1f);
             surfaceTextMesh.transform.localEulerAngles = new Vector3(90, 0, 90);
-            
+
+            // IMPORTANT! Without material, the font cannot display normally
+            MeshRenderer surfaceTextMeshRender = surfaceText.GetComponent<MeshRenderer>();
+            surfaceTextMeshRender.material = this.customCubeSurfaceFont.material;
 
             // Todo: Rotate the cubes
             //var rot = Quaternion.FromToRotation(Vector3.forward, centerPos - new Vector3(x, centerPos.z, y));
