@@ -564,6 +564,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0436cee4264815844bdffc985fd28c75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  customCubeSurfaceFont: {fileID: 12800000, guid: 5b30d732b1671004a95ce4605afed124,
+    type: 3}
 --- !u!135 &1833197870
 SphereCollider:
   m_ObjectHideFlags: 0
