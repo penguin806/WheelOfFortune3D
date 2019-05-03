@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class RetateAroundCenter : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class RetateAroundCenter : MonoBehaviour
     private Material lastTimeSelectedCubeMaterial;
 
     public GameObject centerSphere;
+    public Text resultText;
 
     // Start is called before the first frame update
     void Start()
@@ -32,6 +34,7 @@ public class RetateAroundCenter : MonoBehaviour
         this.currentLerpRotationTime = 0;
         this.playedTimes = 0;
         this.lastTimeSelectedCubeMaterial = null;
+        this.resultText.enabled = false;
     }
 
     // Update is called once per frame
@@ -50,6 +53,7 @@ public class RetateAroundCenter : MonoBehaviour
                 {
                     this.lastTimeSelectedCubeMaterial.SetColor("_Color",
                 new Color(80f / 255f, 140f / 255f, 200f / 255f));
+                    this.resultText.enabled = false;
                 }
                 return;
             }
@@ -100,14 +104,15 @@ public class RetateAroundCenter : MonoBehaviour
 
     void PickClassmateByAngle()
     {
-        string[] myClassmateNames = new string[24] {
-            "伍芳兰", "张敏", "张玥", "杨涵", "申波", "杨名",
-            "阙继婷", "李昌和", "薛有缘", "王位", "陈泽南", "尹红爱",
-            "曾伟康", "王帅旗", "刘伟康", "王端举", "李学锋", "阮书琪",
-            "童方超", "李亚军", "张露云", "刘湘川", "任海清", "易智隆"
-        };
+        //string[] myClassmateNames = new string[24] {
+        //    "伍芳兰", "张敏", "张玥", "杨涵", "申波", "杨名",
+        //    "阙继婷", "李昌和", "薛有缘", "王位", "陈泽南", "尹红爱",
+        //    "曾伟康", "王帅旗", "刘伟康", "王端举", "李学锋", "阮书琪",
+        //    "童方超", "李亚军", "张露云", "刘湘川", "任海清", "易智隆"
+        //};
 
         int whichClassmate = (Mathf.RoundToInt(this.startAngle) + 360) % 360 / 15;
+        // Index starts from 0
         GameObject classmateCube = this.transform.Find(
             whichClassmate.ToString()).gameObject;
 
@@ -115,5 +120,9 @@ public class RetateAroundCenter : MonoBehaviour
         this.lastTimeSelectedCubeMaterial = classmateCubeRender.material;
         classmateCubeRender.material.SetColor("_Color",
                 new Color(255f / 255f, 120f / 255f, 255f / 255f));
+
+        this.resultText.enabled = true;
+        this.resultText.text = "ID: 2016301850" + ((whichClassmate + 1 >= 22) ?
+            (whichClassmate + 2) : (whichClassmate + 1)).ToString("D2");
     }
 }
