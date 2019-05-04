@@ -148,6 +148,14 @@ public class RetateAroundCenter : MonoBehaviour
                 UnityEngine.Random.Range(0, this.cubesAngles.Length)
             ];
 
+        // 暗箱操作
+        // 使抽中小仙女的概率为100% 并制造是随机抽取的假象
+        // hiahiahia
+        if(this.playedTimes == 1)
+        {
+            randomLastTimeRotationAngle = this.cubesAngles[13];
+        }
+
         this.finalAngle = -(360 * fullRotationTimes + randomLastTimeRotationAngle);
         this.isSpinning = true;
     }
